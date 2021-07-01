@@ -1,0 +1,313 @@
+openapi: 3.0.3
+info:
+  title: Title
+  description: Title
+  version: 1.0.0
+servers:
+  - url: 'https'
+paths:
+  /queries:
+    post:
+      summary: Search Products Catalog.
+      parameters:
+        - name: x-algolia-agent
+          in: query
+          required: true
+          type: string
+        - name: x-algolia-api-key
+          in: query
+          required: true
+          type: string
+        - name: x-algolia-application-id
+          in: query
+          required: true
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                requests:
+                  type: array
+                  items:
+                    - type: object
+                      properties:
+                        indexName:
+                          type: string
+                        query:
+                          type: string
+                        params:
+                          type: object
+                          properties:
+                            analytics:
+                              type: boolean
+                            clickAnalytics:
+                              type: boolean
+                            enablePersonalization:
+                              type: boolean
+                            userToken:
+                              type: string
+                            hitsPerPage:
+                              type: integer
+                            page:
+                              type: integer
+                            facetFilters:
+                              type: array
+                              items:
+                                - type: array
+                                  items:
+                                    - type: string
+                            numericFilters:
+                              type: array
+                              items: { }
+      responses:
+        '200':
+          description: Created
+          content:
+            schema:
+              $ref: '#/components/schemas/Product'
+components:
+  schemas:
+
+    Product:
+      type: object
+      title: 'Product'
+      description: 'Product Details'
+      properties:
+        title:
+          type: string
+        sku:
+          type: string
+        description:
+          type: string
+        product_type:
+          type: string
+        main_image:
+          type: string
+        url:
+          type: string
+        wish:
+          type: object
+          properties:
+            amount:
+              type: integer
+        sales:
+          type: object
+          properties:
+            7days:
+              type: object
+              properties:
+                score:
+                  type: integer
+            30days:
+              type: object
+              properties:
+                score:
+                  type: integer
+            90days:
+              type: object
+              properties:
+                score:
+                  type: integer
+            allTime:
+              type: object
+              properties:
+                score:
+                  type: integer
+        reviews:
+          type: object
+          properties:
+            numberOfRatings:
+              type: integer
+            averageRating:
+              type: string
+        tags:
+          type: object
+          properties:
+            automated_tags:
+              type: array
+              items:
+                - type: string
+        clearance:
+          type: boolean
+        collections:
+          type: object
+          required:
+            - lv1
+          properties:
+            lv1:
+              type: array
+              items:
+                - type: string
+            lv2:
+              type: array
+              items:
+                - type: string
+        colors:
+          type: object
+          properties:
+            main_color:
+              type: string
+            colors:
+              type: array
+              items:
+                - type: object
+                  properties:
+                    name:
+                      type: string
+                - type: object
+                  properties:
+                    name:
+                      type: string
+                - type: object
+                  properties:
+                    name:
+                      type: string
+        layouts:
+          type: array
+          items:
+            - type: object
+              properties:
+                name:
+                  type: string
+                  enum:
+                    - '1 Horizontal'
+                    - '1 Panoramic'
+                    - '1 Square'
+                    - '1 Vertical Wide'
+                    - '1 Vertical'
+                    - '2 Horizontal'
+                    - '2 Square'
+                    - '3 Bow Horizontal'
+                    - '3 Horizontal'
+                    - '3 Square'
+                    - '3 Vertical Wide'
+                    - '3 Vertical'
+                    - '3 Wine'
+                    - '4 Horizontal'
+                    - '4 Mess'
+                    - '4 Square'
+                    - '4 Vertical Wide'
+                    - '5 Horizontal'
+                    - '5 Mess'
+                    - '5 Star'
+                    - '6 Horizontal'
+                    - '6 Vertical'
+                    - '7 Hexagon'
+                    - 'Core Horizontal'
+                    - 'Core Vertical'
+                    - 'Floating Horizontal'
+                    - 'Floating Panoramic'
+                    - 'Floating Vertical Wide'
+                    - 'Framed Horizontal'
+                    - 'Framed Panoramic'
+                    - 'Framed Vertical Wide'
+                type:
+                  type: string
+                  enum:
+                    - 'Canvas'
+                    - 'Multiple'
+                    - 'Framed Print'
+                    - 'Framed Canvas'
+                pieces:
+                  type: integer
+                  minimum: 1
+                  maximum: 6
+                shape:
+                  type: string
+                  enum:
+                    - 'horizontal'
+                    - 'vertical'
+                    - 'square'
+                    - 'panoramic'
+                    - 'hexagon'
+                link:
+                  type: string
+                sizes:
+                  type: array
+                  items:
+                    - type: object
+                      properties:
+                        size:
+                          type: string
+                        size_name:
+                          type: string
+                      required:
+                        - size
+                        - size_name
+                preview_images:
+                  type: array
+                  items:
+                    - type: object
+                      properties:
+                        image_link:
+                          type: string
+                        empty_room_link:
+                          type: string
+                        room_type:
+                          type: string
+                        colors:
+                          type: array
+                          items:
+                            - type: string
+                        styles:
+                          type: array
+                          items:
+                            - type: string
+                        unique:
+                          type: array
+                          items:
+                            - type: string
+        rooms:
+          type: array
+          items:
+            - type: object
+              properties:
+                name:
+                  type: string
+        styles:
+          type: object
+          properties:
+            lv1:
+              type: array
+              items:
+                - type: string
+            lv2:
+              type: array
+              items:
+                - type: string
+        created_at:
+          type: integer
+        last_updated:
+          type: integer
+        published_at:
+          type: integer
+        shopify_id:
+          type: integer
+        square_image:
+          type: string
+        clearance_details:
+          type: array
+          items:
+            - type: object
+              properties:
+                layout_name:
+                  type: string
+                variant:
+                  type: string
+                size:
+                  type: string
+                price:
+                  type: string
+                compare_at_price:
+                  type: string
+                quantity:
+                  type: integer
+                link:
+                  type: string
+        objectID:
+          type: string
+
+
