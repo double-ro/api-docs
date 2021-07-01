@@ -147,6 +147,9 @@ components:
         - sku
         - product_type
         - url
+        - color_main
+        - colors
+        - layouts
       properties:
         sku:
           title: 'SKU'
@@ -174,6 +177,38 @@ components:
           description: 'Product URL'
           type: string
 
+        collections_lv1:
+          title: 'Collections Level 1 (old)'
+          description: 'Product Collections Level 1 (old)'
+          deprecated: true
+          type: array
+          items:
+            - type: string
+              minLength: 1
+
+        collections_lv2:
+          title: 'Collections Level 2 (old)'
+          description: 'Product Collections Level 2 (old)'
+          deprecated: true
+          type: array
+          items:
+            - type: string
+              minLength: 1
+
+        color_main:
+          title: 'Main Color'
+          description: 'Product Main Color'
+          type: string
+          minLength: 3
+        colors:
+          title: 'Colors'
+          description: 'Product Colors'
+          type: array
+          minItems: 1
+          items:
+            - type: string
+              minLength: 3
+
         wish_count:
           title: 'Wish Count'
           description: 'Product Wish Count'
@@ -200,55 +235,31 @@ components:
           type: integer
           minimum: 0
 
-        reviews:
-          type: object
-          properties:
-            numberOfRatings:
-              type: integer
-            averageRating:
-              type: string
-        tags:
-          type: object
-          properties:
-            automated_tags:
-              type: array
-              items:
-                - type: string
+        reviews_count:
+          title: 'Reviews Count'
+          description: 'Product Reviews Count'
+          type: integer
+          minimum: 0
+        reviews_avg_rating:
+          title: 'Reviews Average Rating'
+          description: 'Product Reviews Average Rating'
+          type: number
+          format: float
+          minimum: 0
+
+        tags_auto:
+          title: 'Automated Tags'
+          description: 'Product Automated Tags'
+          type: array
+          items:
+            - type: string
+              minLength: 1
+
         clearance:
+          title: 'Clearance'
+          description: 'Is product on clearance sale'
           type: boolean
-        collections:
-          type: object
-          required:
-            - lv1
-          properties:
-            lv1:
-              type: array
-              items:
-                - type: string
-            lv2:
-              type: array
-              items:
-                - type: string
-        colors:
-          type: object
-          properties:
-            main_color:
-              type: string
-            colors:
-              type: array
-              items:
-                - type: object
-                  properties:
-                    name:
-                      type: string
-                - type: object
-                  properties:
-                    name:
-                      type: string
-                - type: object
-                  properties:
-                    name:
-                      type: string
+
         layouts:
           type: array
           items:
