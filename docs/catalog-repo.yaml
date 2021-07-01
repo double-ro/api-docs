@@ -1,121 +1,205 @@
 openapi: 3.0.3
 info:
-  title: Title
-  description: Title
+  title: Catalog Repository API
+  description: Catalog Repository service REST API specification. Catalog Repository service is intended to serve information about products.
   version: 1.0.0
 servers:
-  - url: 'https'
+  - url: 'https://'
+    description: 'Dev Server'
+security:
+  - basicAuth: []
+tags:
+  - name: products
+    description: Products management resources
 paths:
-  /queries:
-    post:
-      summary: Search Products Catalog.
-      parameters:
-        - name: x-algolia-agent
-          in: query
-          required: true
-          type: string
-        - name: x-algolia-api-key
-          in: query
-          required: true
-          type: string
-        - name: x-algolia-application-id
-          in: query
-          required: true
-          type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                requests:
-                  type: array
-                  items:
-                    - type: object
-                      properties:
-                        indexName:
-                          type: string
-                        query:
-                          type: string
-                        params:
-                          type: object
-                          properties:
-                            analytics:
-                              type: boolean
-                            clickAnalytics:
-                              type: boolean
-                            enablePersonalization:
-                              type: boolean
-                            userToken:
-                              type: string
-                            hitsPerPage:
-                              type: integer
-                            page:
-                              type: integer
-                            facetFilters:
-                              type: array
-                              items:
-                                - type: array
-                                  items:
-                                    - type: string
-                            numericFilters:
-                              type: array
-                              items: { }
+  /products:
+    options:
+      summary: CORS support
+      tags:
+        - products
       responses:
-        '200':
-          description: Created
+        200:
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content: { }
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {"statusCode" : 200}
+        responses:
+          default:
+            statusCode: 200
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,GET'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            responseTemplates:
+              application/json: '{}'
+      x-amazon-apigateway-auth: NONE
+    get:
+      summary: List products
+      description: Returns list of producsts that can be filtered by a number of fields
+      operationId: products-list
+      tags:
+        - products
+      parameters:
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: page_token
+          in: query
+          schema:
+            $ref: '#/components/schemas/PageToken'
+      responses:
+        200:
+          description: 'Successfully returned products list'
           content:
-            schema:
-              $ref: '#/components/schemas/Product'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductsList'
+        401:
+          description: 'Unauthorized Exception'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FunctionArn}/invocations
+        httpMethod: POST
+        type: aws_proxy
+        passthroughBehavior: never
+        requestParameters:
+          integration.request.querystring.page_size: method.request.querystring.page_size
+          integration.request.querystring.page_token: method.request.querystring.page_token
+          integration.request.header.Authorization: method.request.header.Authorization
+          integration.request.header.origin: method.request.header.origin
+        responseParameters:
+          method.response.header.Access-Control-Allow-Origin: integration.response.header.Access-Control-Allow-Origin
+        security:
+          - basicAuth: []
 components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
   schemas:
+    Error:
+      type: object
+      title: 'Error'
+      description: 'Error Details'
+      properties:
+        code:
+          type: string
+          title: 'Code'
+          description: 'Error internal code'
+        message:
+          type: string
+          title: 'Message'
+          description: 'Error message'
+
+    PageToken:
+      title: 'Page Token'
+      description: 'Next Page Token'
+      minLength: 3
+      type: string
+
+    ProductsList:
+      type: object
+      title: 'Products List'
+      description: 'Product List Details'
+      required:
+        - items
+      properties:
+        page_token:
+          $ref: '#/components/schemas/PageToken'
+        items:
+          title: 'Product Items'
+          description: 'Current page with product items'
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/Product'
 
     Product:
       type: object
       title: 'Product'
       description: 'Product Details'
+      required:
+        - sku
+        - product_type
+        - url
       properties:
-        title:
-          type: string
         sku:
+          title: 'SKU'
+          description: 'Product SKU'
+          type: string
+          minLength: 1
+        title:
+          title: 'Title'
+          description: 'Product Title'
           type: string
         description:
+          title: 'Description'
+          description: 'Product Description'
           type: string
         product_type:
+          title: 'Type'
+          description: 'Product Type'
           type: string
         main_image:
+          title: 'Main Image'
+          description: 'Product Main Image URL'
           type: string
         url:
+          title: 'URL'
+          description: 'Product URL'
           type: string
-        wish:
-          type: object
-          properties:
-            amount:
-              type: integer
-        sales:
-          type: object
-          properties:
-            7days:
-              type: object
-              properties:
-                score:
-                  type: integer
-            30days:
-              type: object
-              properties:
-                score:
-                  type: integer
-            90days:
-              type: object
-              properties:
-                score:
-                  type: integer
-            allTime:
-              type: object
-              properties:
-                score:
-                  type: integer
+
+        wish_count:
+          title: 'Wish Count'
+          description: 'Product Wish Count'
+          type: integer
+          minimum: 0
+        sales_7_days:
+          title: '7 Days Sales'
+          description: 'Product 7 Days Sales'
+          type: integer
+          minimum: 0
+        sales_30_days:
+          title: '30 Days Sales'
+          description: 'Product 30 Days Sales'
+          type: integer
+          minimum: 0
+        sales_90_days:
+          title: '90 Days Sales'
+          description: 'Product 90 Days Sales'
+          type: integer
+          minimum: 0
+        sales_all_time:
+          title: 'All Time Sales'
+          description: 'Product All Time Sales'
+          type: integer
+          minimum: 0
+
         reviews:
           type: object
           properties:
