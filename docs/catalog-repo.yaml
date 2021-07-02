@@ -7,11 +7,89 @@ servers:
   - url: 'https://'
     description: 'Dev Server'
 security:
-  - basicAuth: []
+  - basicAuth: [ ]
 tags:
+  - name: artists
+    description: Artists management resources
   - name: products
     description: Products management resources
 paths:
+  /artists:
+    options:
+      summary: CORS support
+      tags:
+        - artists
+      responses:
+        200:
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content: { }
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {"statusCode" : 200}
+        responses:
+          default:
+            statusCode: 200
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,GET'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            responseTemplates:
+              application/json: '{}'
+      x-amazon-apigateway-auth: NONE
+    get:
+      summary: List artists
+      description: Returns list of artists with info about each
+      operationId: artists-list
+      tags:
+        - artists
+      responses:
+        200:
+          description: 'Successfully returned artists list'
+          content:
+            application/json:
+              schema:
+                title: 'Artists List'
+                type: array
+                minItems: 0
+                items:
+                  $ref: '#/components/schemas/Artist'
+        401:
+          description: 'Unauthorized Exception'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FunctionArn}/invocations
+        httpMethod: POST
+        type: aws_proxy
+        passthroughBehavior: never
+        requestParameters:
+          integration.request.header.Authorization: method.request.header.Authorization
+          integration.request.header.origin: method.request.header.origin
+        responseParameters:
+          method.response.header.Access-Control-Allow-Origin: integration.response.header.Access-Control-Allow-Origin
+        security:
+          - basicAuth: [ ]
   /products:
     options:
       summary: CORS support
@@ -68,7 +146,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductsList'
+                title: 'Products List'
+                description: 'Product List Details'
+                type: object
+                required:
+                  - items
+                properties:
+                  page_token:
+                    $ref: '#/components/schemas/PageToken'
+                  items:
+                    title: 'Product Items'
+                    description: 'Current page with product items'
+                    type: array
+                    minItems: 0
+                    items:
+                      $ref: '#/components/schemas/Product'
         401:
           description: 'Unauthorized Exception'
           content:
@@ -95,7 +187,7 @@ paths:
         responseParameters:
           method.response.header.Access-Control-Allow-Origin: integration.response.header.Access-Control-Allow-Origin
         security:
-          - basicAuth: []
+          - basicAuth: [ ]
 components:
   securitySchemes:
     basicAuth:
@@ -121,23 +213,6 @@ components:
       description: 'Next Page Token'
       minLength: 3
       type: string
-
-    ProductsList:
-      type: object
-      title: 'Products List'
-      description: 'Product List Details'
-      required:
-        - items
-      properties:
-        page_token:
-          $ref: '#/components/schemas/PageToken'
-        items:
-          title: 'Product Items'
-          description: 'Current page with product items'
-          type: array
-          minItems: 0
-          items:
-            $ref: '#/components/schemas/Product'
 
     RoomType:
       title: 'Room Type'
@@ -238,6 +313,10 @@ components:
         main_image:
           title: 'Main Image'
           description: 'Product Main Image URL'
+          type: string
+        square_image:
+          title: 'Square Image'
+          description: 'Product Square Image URL'
           type: string
         url:
           title: 'URL'
@@ -522,10 +601,6 @@ components:
                           - 'pets'
                           - 'pop of color'
                           - 'sporty'
-        square_image_url:
-          title: 'Square Image URL'
-          description: 'Product Square Image URL'
-          type: string
 
         rooms:
           title: 'Rooms'
@@ -569,3 +644,58 @@ components:
           description: 'Product Shopify Id'
           type: integer
           format: int64
+
+    Artist:
+      title: 'Artist'
+      description: 'Artist Details'
+      type: object
+      required:
+        - name
+        - styles
+        - products_count
+        - sales
+        - sales_extras
+      properties:
+        name:
+          title: 'Name'
+          description: 'Artist Name'
+          type: string
+          minLength: 2
+        styles:
+          title: 'Styles'
+          description: 'Artist Styles'
+          type: string
+          enum:
+            - 'Alternative'
+            - 'Beach House'
+            - 'Fine Art'
+            - 'Minimalist'
+            - 'Photography'
+            - 'Rustic'
+            - 'Vintage'
+            - 'Zen'
+        preview_url:
+          title: 'Preview URL'
+          description: 'Artist Preview Image URL'
+          type: string
+          minLength: 2
+        products_count:
+          title: 'Products Count'
+          description: 'Artist Products Count'
+          type: integer
+          minimum: 0
+        published_at:
+          title: 'Published At'
+          description: 'Artist Published At Timestamp'
+          type: integer
+          format: int64
+        sales:
+          title: 'Sales'
+          description: 'Artist Sales'
+          type: integer
+          minimum: 0
+        sales_extras:
+          title: 'Sales Extras'
+          description: 'Artist Extras Sales'
+          type: integer
+          minimum: 0
