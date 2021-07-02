@@ -139,6 +139,73 @@ components:
           items:
             $ref: '#/components/schemas/Product'
 
+    RoomType:
+      title: 'Room Type'
+      description: 'Supported Room Type'
+      type: string
+      enum:
+        - 'bar'
+        - 'bathroom'
+        - 'bedroom'
+        - 'cafe & restaurant'
+        - 'dining room'
+        - 'gym/sport rooms'
+        - 'hallway'
+        - 'home office & office'
+        - 'home office'
+        - 'kids & nursery'
+        - 'kids room'
+        - 'kitchen & cafe'
+        - 'kitchen & dining room'
+        - 'kitchen'
+        - 'laundry room'
+        - 'living room'
+        - 'lobby'
+        - 'man cave & bar'
+        - 'mancave'
+        - 'nursery'
+        - 'office'
+        - 'salon'
+        - 'spa'
+        - 'teenager'
+        - 'wall'
+    LayoutName:
+      title: 'layout Name'
+      description: 'Product Layout Name'
+      type: string
+      enum:
+        - '1 Horizontal'
+        - '1 Panoramic'
+        - '1 Square'
+        - '1 Vertical Wide'
+        - '1 Vertical'
+        - '2 Horizontal'
+        - '2 Square'
+        - '3 Bow Horizontal'
+        - '3 Horizontal'
+        - '3 Square'
+        - '3 Vertical Wide'
+        - '3 Vertical'
+        - '3 Wine'
+        - '4 Horizontal'
+        - '4 Mess'
+        - '4 Square'
+        - '4 Vertical Wide'
+        - '5 Horizontal'
+        - '5 Mess'
+        - '5 Star'
+        - '6 Horizontal'
+        - '6 Vertical'
+        - '7 Hexagon'
+        - 'Core Horizontal'
+        - 'Core Vertical'
+        - 'Floating Horizontal'
+        - 'Floating Panoramic'
+        - 'Floating Vertical Wide'
+        - 'Framed Horizontal'
+        - 'Framed Panoramic'
+        - 'Framed Vertical Wide'
+
     Product:
       type: object
       title: 'Product'
@@ -183,8 +250,8 @@ components:
           deprecated: true
           type: array
           items:
-            - type: string
-              minLength: 1
+            type: string
+            minLength: 1
 
         collections_lv2:
           title: 'Collections Level 2 (old)'
@@ -192,8 +259,8 @@ components:
           deprecated: true
           type: array
           items:
-            - type: string
-              minLength: 1
+            type: string
+            minLength: 1
 
         color_main:
           title: 'Main Color'
@@ -206,8 +273,8 @@ components:
           type: array
           minItems: 1
           items:
-            - type: string
-              minLength: 3
+            type: string
+            minLength: 3
 
         wish_count:
           title: 'Wish Count'
@@ -252,157 +319,253 @@ components:
           description: 'Product Automated Tags'
           type: array
           items:
-            - type: string
-              minLength: 1
+            type: string
+            minLength: 1
 
         clearance:
           title: 'Clearance'
           description: 'Is product on clearance sale'
           type: boolean
+        clearance_details:
+          title: 'Clearance Details'
+          description: 'Product Clearance Details'
+          type: array
+          items:
+            title: 'Clearance Item'
+            description: 'Product Clearance Item'
+            type: object
+            required:
+              - layout_name
+              - variant
+              - size
+              - price
+              - quantity
+              - url
+            properties:
+              layout_name:
+                $ref: '#/components/schemas/LayoutName'
+              variant:
+                title: 'Item Variant'
+                description: 'Clearance Item Variant'
+                type: string
+              size:
+                title: 'Item Size'
+                description: 'Clearance Item Size'
+                type: string
+              price:
+                title: 'Item Price'
+                description: 'Clearance Item Price'
+                type: number
+                minimum: 0
+              compare_at_price:
+                title: 'Item Old Price'
+                description: 'Clearance Item Old Price'
+                type: number
+                minimum: 0
+              quantity:
+                title: 'Item Quantity'
+                description: 'Clearance Item Quantity'
+                type: integer
+                minimum: 1
+              url:
+                title: 'Item URL'
+                description: 'Clearance Item URL'
+                type: string
 
         layouts:
+          title: 'Layouts'
+          description: 'Product Layouts'
           type: array
           items:
-            - type: object
-              properties:
-                name:
-                  type: string
-                  enum:
-                    - '1 Horizontal'
-                    - '1 Panoramic'
-                    - '1 Square'
-                    - '1 Vertical Wide'
-                    - '1 Vertical'
-                    - '2 Horizontal'
-                    - '2 Square'
-                    - '3 Bow Horizontal'
-                    - '3 Horizontal'
-                    - '3 Square'
-                    - '3 Vertical Wide'
-                    - '3 Vertical'
-                    - '3 Wine'
-                    - '4 Horizontal'
-                    - '4 Mess'
-                    - '4 Square'
-                    - '4 Vertical Wide'
-                    - '5 Horizontal'
-                    - '5 Mess'
-                    - '5 Star'
-                    - '6 Horizontal'
-                    - '6 Vertical'
-                    - '7 Hexagon'
-                    - 'Core Horizontal'
-                    - 'Core Vertical'
-                    - 'Floating Horizontal'
-                    - 'Floating Panoramic'
-                    - 'Floating Vertical Wide'
-                    - 'Framed Horizontal'
-                    - 'Framed Panoramic'
-                    - 'Framed Vertical Wide'
-                type:
-                  type: string
-                  enum:
-                    - 'Canvas'
-                    - 'Multiple'
-                    - 'Framed Print'
-                    - 'Framed Canvas'
-                pieces:
-                  type: integer
-                  minimum: 1
-                  maximum: 6
-                shape:
-                  type: string
-                  enum:
-                    - 'horizontal'
-                    - 'vertical'
-                    - 'square'
-                    - 'panoramic'
-                    - 'hexagon'
-                link:
-                  type: string
-                sizes:
-                  type: array
-                  items:
-                    - type: object
-                      properties:
-                        size:
-                          type: string
-                        size_name:
-                          type: string
-                      required:
-                        - size
-                        - size_name
-                preview_images:
-                  type: array
-                  items:
-                    - type: object
-                      properties:
-                        image_link:
-                          type: string
-                        empty_room_link:
-                          type: string
-                        room_type:
-                          type: string
-                        colors:
-                          type: array
-                          items:
-                            - type: string
-                        styles:
-                          type: array
-                          items:
-                            - type: string
-                        unique:
-                          type: array
-                          items:
-                            - type: string
+            title: 'Layout'
+            description: 'Product Layout'
+            type: object
+            required:
+              - type
+              - pieces
+              - shape
+            properties:
+              name:
+                $ref: '#/components/schemas/LayoutName'
+              type:
+                title: 'Type'
+                description: 'Layout Type'
+                type: string
+                enum:
+                  - 'Canvas'
+                  - 'Multiple'
+                  - 'Framed Print'
+                  - 'Framed Canvas'
+              pieces:
+                title: 'Pieces'
+                description: 'Number of Pieces in Layout'
+                type: integer
+                minimum: 1
+                maximum: 6
+              shape:
+                title: 'Shape'
+                description: 'Layout Shape'
+                type: string
+                enum:
+                  - 'horizontal'
+                  - 'vertical'
+                  - 'square'
+                  - 'panoramic'
+                  - 'hexagon'
+              url:
+                title: 'URL'
+                description: 'Layout Shop URL'
+                type: string
+                minLength: 5
+              sizes:
+                title: 'Sizes'
+                description: 'Layout Sizes'
+                type: array
+                items:
+                  title: 'Layout Size'
+                  description: 'Layout Size'
+                  type: object
+                  required:
+                    - size
+                  properties:
+                    size:
+                      title: 'Size'
+                      description: 'Layout Dimensions Size'
+                      type: string
+                      minLength: 3
+                    name:
+                      title: 'Name'
+                      description: 'Layout Size Name'
+                      type: string
+              previews:
+                title: 'Previews'
+                description: 'Layout Previews'
+                type: array
+                items:
+                  title: 'Preview'
+                  description: 'Layout Preview'
+                  type: object
+                  required:
+                    - preview_url
+                    - room_type
+                    - styles
+                    - colors
+                  properties:
+                    preview_url:
+                      title: 'Preview URL'
+                      description: 'Layout Preview URL'
+                      type: string
+                    empty_room_url:
+                      title: 'Room Preview URL'
+                      description: 'Empty Room Preview URL'
+                      type: string
+                    room_type:
+                      $ref: '#/components/schemas/RoomType'
+                    colors:
+                      title: 'Colors'
+                      description: 'Preview Colors'
+                      type: array
+                      items:
+                        type: string
+                        enum:
+                          - 'b&w'
+                          - 'black'
+                          - 'blue'
+                          - 'brown'
+                          - 'gray'
+                          - 'green'
+                          - 'light blue'
+                          - 'orange'
+                          - 'pink'
+                          - 'purple'
+                          - 'red'
+                          - 'vanilla'
+                          - 'yellow'
+                    styles:
+                      title: 'Styles'
+                      description: 'Preview Styles'
+                      type: array
+                      items:
+                        type: string
+                        enum:
+                          - 'commercial'
+                          - 'farmhouse'
+                          - 'feminine'
+                          - 'hipster'
+                          - 'masculine'
+                          - 'minimalist'
+                          - 'modern'
+                          - 'nautical'
+                          - 'oriental'
+                          - 'rustic'
+                          - 'scandinavian'
+                          - 'shabby chic'
+                          - 'traditional'
+                          - 'vintage'
+                    unique:
+                      title: 'Unique'
+                      description: 'Preview Unique'
+                      type: array
+                      items:
+                        type: string
+                        enum:
+                          - 'african'
+                          - 'bizarre'
+                          - 'bold color'
+                          - 'casual'
+                          - 'dark'
+                          - 'festive'
+                          - 'greenery'
+                          - 'lights'
+                          - 'musical'
+                          - 'patio'
+                          - 'pets'
+                          - 'pop of color'
+                          - 'sporty'
+        square_image_url:
+          title: 'Square Image URL'
+          description: 'Product Square Image URL'
+          type: string
+
         rooms:
+          title: 'Rooms'
+          description: 'Product Rooms'
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/RoomType'
+
+        styles_lv1:
+          title: 'Styles Level 1'
+          description: 'Product Styles Level 1'
           type: array
           items:
-            - type: object
-              properties:
-                name:
-                  type: string
-        styles:
-          type: object
-          properties:
-            lv1:
-              type: array
-              items:
-                - type: string
-            lv2:
-              type: array
-              items:
-                - type: string
+            type: string
+        styles_lv2:
+          title: 'Styles Level 2'
+          description: 'Product Styles Level 2'
+          type: array
+          items:
+            type: string
+
         created_at:
+          title: 'Created At'
+          description: 'Product Creation Timestamp'
           type: integer
-        last_updated:
+          format: int64
+        last_updated_at:
+          title: 'Updated At'
+          description: 'Product Last Update Timestamp'
           type: integer
+          format: int64
         published_at:
+          title: 'Published At'
+          description: 'Product Publishing Timestamp'
           type: integer
+          format: int64
+
         shopify_id:
+          title: 'Shopify Id'
+          description: 'Product Shopify Id'
           type: integer
-        square_image:
-          type: string
-        clearance_details:
-          type: array
-          items:
-            - type: object
-              properties:
-                layout_name:
-                  type: string
-                variant:
-                  type: string
-                size:
-                  type: string
-                price:
-                  type: string
-                compare_at_price:
-                  type: string
-                quantity:
-                  type: integer
-                link:
-                  type: string
-        objectID:
-          type: string
-
-
+          format: int64
