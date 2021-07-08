@@ -269,6 +269,38 @@ paths:
             items:
               $ref: '#/components/schemas/Color'
 
+        - name: filter
+          in: query
+          style: form
+          explode: false
+          schema:
+            title: 'Numeric Filters'
+            type: array
+            minItems: 1
+            items:
+              title: 'Numeric Filter'
+              description: 'Numeric filter details in format <field>|<expression>|<value>. Possible fields: score_7_days, score_30_days, score_90_days, score_all_time, created_at, reviews_count, reviews_avg_rating. Possible expressions: <, <=, =, >, >='
+              type: string
+              minLength: 5
+              example: 'score_all_time|>=|5'
+
+        - name: sort
+          in: query
+          style: form
+          explode: false
+          schema:
+            title: 'Sort'
+            type: array
+            minItems: 1
+            default:
+              - 'score_90_days|desc'
+            items:
+              title: 'Sort Fields Configuration'
+              description: 'Sort fields configuration in format <field>|<direction>. Possible fields: score_7_days, score_30_days, score_90_days, score_all_time, created_at, reviews_count, reviews_avg_rating. Possible expressions: asc, desc'
+              type: string
+              minLength: 5
+              example: 'score_90_days|desc'
+
         - name: page_size
           in: query
           schema:
@@ -334,6 +366,8 @@ paths:
           integration.request.querystring.layout_types: method.request.querystring.layout_types
           integration.request.querystring.layout_preview_room_types: method.request.querystring.layout_preview_room_types
           integration.request.querystring.colors: method.request.querystring.colors
+          integration.request.querystring.filter: method.request.querystring.filter
+          integration.request.querystring.sort: method.request.querystring.sort
           integration.request.querystring.page_size: method.request.querystring.page_size
           integration.request.querystring.page_token: method.request.querystring.page_token
           integration.request.header.Authorization: method.request.header.Authorization
