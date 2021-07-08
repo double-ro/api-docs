@@ -55,6 +55,10 @@ paths:
       tags:
         - artists
       parameters:
+        - name: country
+          in: query
+          schema:
+            $ref: '#/components/schemas/Country'
         - name: styles
           description: 'Artist styles filter'
           in: query
@@ -64,6 +68,23 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/ArtistStyle'
+
+        - name: sort
+          in: query
+          style: form
+          explode: false
+          schema:
+            title: 'Sort'
+            type: array
+            minItems: 1
+            default:
+              - 'name|desc'
+            items:
+              title: 'Sort Fields Configuration'
+              description: 'Sort fields configuration in format <field>|<direction>. Possible fields: name, products_count, sales, published_at. Possible expressions: asc, desc'
+              type: string
+              minLength: 5
+              example: 'name|desc'
       responses:
         200:
           description: 'Successfully returned artists list'
@@ -94,6 +115,8 @@ paths:
         type: aws_proxy
         passthroughBehavior: never
         requestParameters:
+          integration.request.querystring.country: method.request.querystring.country
+          integration.request.querystring.sort: method.request.querystring.sort
           integration.request.header.Authorization: method.request.header.Authorization
           integration.request.header.origin: method.request.header.origin
         responseParameters:
@@ -927,9 +950,8 @@ components:
       required:
         - name
         - styles
+        - preview_url
         - products_count
-        - sales
-        - sales_extras
       properties:
         name:
           title: 'Name'
@@ -958,13 +980,26 @@ components:
           description: 'Artist Published At Timestamp'
           type: integer
           format: int64
-        sales:
-          title: 'Sales'
-          description: 'Artist Sales'
-          type: integer
-          minimum: 0
-        sales_extras:
-          title: 'Sales Extras'
-          description: 'Artist Extras Sales'
-          type: integer
-          minimum: 0
+
+    ArtistInternal:
+      title: 'Artist Internal'
+      description: 'Artist Internal Details'
+      allOf:
+        - $ref: '#/components/schemas/Artist'
+        - type: object
+          properties:
+            sales_us:
+              title: 'Sales US'
+              description: 'Artist Sales in US'
+              type: integer
+              minimum: 0
+            sales_ca:
+              title: 'Sales CA'
+              description: 'Artist Sales in CA'
+              type: integer
+              minimum: 0
+            sales_extras:
+              title: 'Sales Extras'
+              description: 'Artist Extras Sales'
+              type: integer
+              minimum: 0
