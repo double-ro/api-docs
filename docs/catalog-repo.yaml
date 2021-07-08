@@ -54,6 +54,16 @@ paths:
       operationId: artists-list
       tags:
         - artists
+      parameters:
+        - name: styles
+          description: 'Artist styles filter'
+          in: query
+          style: pipeDelimited
+          explode: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ArtistStyle'
       responses:
         200:
           description: 'Successfully returned artists list'
@@ -126,16 +136,146 @@ paths:
       x-amazon-apigateway-auth: NONE
     get:
       summary: List products
-      description: Returns list of producsts that can be filtered by a number of fields
+      description: Returns list of products ordered by the score with a possibility to filter by supported fields
       operationId: products-list
       tags:
         - products
       parameters:
+        - name: country
+          in: query
+          schema:
+            $ref: '#/components/schemas/Country'
+        - name: artist_name
+          in: query
+          schema:
+            title: 'Artist Name'
+            type: string
+            minLength: 2
+        - name: clearance
+          in: query
+          schema:
+            title: 'Clearance'
+            description: 'Is product on clearance sale'
+            type: boolean
+
+        - name: collections_lv1
+          in: query
+          explode: false
+          schema:
+            title: 'Collections Level 1 (old)'
+            deprecated: true
+            type: array
+            minItems: 1
+            items:
+              type: string
+              minLength: 1
+        - name: collections_lv2
+          in: query
+          explode: false
+          schema:
+            title: 'Collections Level 2 (old)'
+            deprecated: true
+            type: array
+            minItems: 1
+            items:
+              type: string
+              minLength: 1
+
+        - name: styles_lv1
+          in: query
+          explode: false
+          schema:
+            title: 'Product Styles Level 1'
+            type: array
+            minItems: 1
+            items:
+              type: string
+              minLength: 1
+        - name: styles_lv2
+          in: query
+          explode: false
+          schema:
+            title: 'Product Styles Level 2'
+            type: array
+            minItems: 1
+            items:
+              type: string
+              minLength: 1
+
+        - name: tags_auto
+          in: query
+          explode: false
+          schema:
+            title: 'Automated Tags'
+            type: array
+            minItems: 1
+            items:
+              type: string
+              minLength: 1
+
+        - name: layout_names
+          in: query
+          explode: false
+          schema:
+            title: 'Layout Names'
+            type: array
+            minItems: 1
+            items:
+              $ref: '#/components/schemas/LayoutName'
+        - name: layout_pieces
+          in: query
+          explode: false
+          schema:
+            title: 'Layout Pieces'
+            type: array
+            minItems: 1
+            items:
+              $ref: '#/components/schemas/LayoutPieces'
+        - name: layout_shapes
+          in: query
+          explode: false
+          schema:
+            title: 'Layout Shape'
+            type: array
+            minItems: 1
+            items:
+              $ref: '#/components/schemas/LayoutShape'
+        - name: layout_types
+          in: query
+          explode: false
+          schema:
+            title: 'Layout Types'
+            type: array
+            minItems: 1
+            items:
+              $ref: '#/components/schemas/LayoutType'
+        - name: layout_preview_room_types
+          in: query
+          explode: false
+          schema:
+            title: 'Layout Preview Room Types'
+            type: array
+            minItems: 1
+            items:
+              $ref: '#/components/schemas/RoomType'
+
+        - name: colors
+          in: query
+          explode: false
+          schema:
+            title: 'Colors'
+            type: array
+            minItems: 1
+            items:
+              $ref: '#/components/schemas/Color'
+
         - name: page_size
           in: query
           schema:
             type: integer
             default: 20
+            minimum: 1
+            maximum: 200
         - name: page_token
           in: query
           schema:
@@ -180,6 +320,20 @@ paths:
         type: aws_proxy
         passthroughBehavior: never
         requestParameters:
+          integration.request.querystring.country: method.request.querystring.country
+          integration.request.querystring.artist_name: method.request.querystring.artist_name
+          integration.request.querystring.clearance: method.request.querystring.clearance
+          integration.request.querystring.collections_lv1: method.request.querystring.collections_lv1
+          integration.request.querystring.collections_lv2: method.request.querystring.collections_lv2
+          integration.request.querystring.styles_lv1: method.request.querystring.styles_lv1
+          integration.request.querystring.styles_lv2: method.request.querystring.styles_lv2
+          integration.request.querystring.tags_auto: method.request.querystring.tags_auto
+          integration.request.querystring.layout_names: method.request.querystring.layout_names
+          integration.request.querystring.layout_pieces: method.request.querystring.layout_pieces
+          integration.request.querystring.layout_shapes: method.request.querystring.layout_shapes
+          integration.request.querystring.layout_types: method.request.querystring.layout_types
+          integration.request.querystring.layout_preview_room_types: method.request.querystring.layout_preview_room_types
+          integration.request.querystring.colors: method.request.querystring.colors
           integration.request.querystring.page_size: method.request.querystring.page_size
           integration.request.querystring.page_token: method.request.querystring.page_token
           integration.request.header.Authorization: method.request.header.Authorization
@@ -214,6 +368,51 @@ components:
       minLength: 3
       type: string
 
+    Country:
+      title: 'Country'
+      description: 'Country Code'
+      type: string
+      default: 'us'
+      enum:
+        - 'us'
+        - 'ca'
+
+    Color:
+      title: 'Color'
+      type: string
+      enum:
+        - 'Aquamarine'
+        - 'B&w'
+        - 'Beige'
+        - 'Black'
+        - 'Blue gray'
+        - 'Blue'
+        - 'Brown'
+        - 'Classic blue'
+        - 'Dark green'
+        - 'Gold'
+        - 'Gray'
+        - 'Green'
+        - 'Light blue'
+        - 'Light green'
+        - 'Lime green'
+        - 'Main-yellow'
+        - 'Maroon'
+        - 'Navy blue'
+        - 'Orange'
+        - 'Pink'
+        - 'Purple'
+        - 'Red'
+        - 'Rose gold'
+        - 'Royal blue'
+        - 'Silver'
+        - 'Teal'
+        - 'True blue'
+        - 'True green'
+        - 'Turquoise'
+        - 'White'
+        - 'Yellow'
+
     RoomType:
       title: 'Room Type'
       description: 'Supported Room Type'
@@ -244,8 +443,9 @@ components:
         - 'spa'
         - 'teenager'
         - 'wall'
+
     LayoutName:
-      title: 'layout Name'
+      title: 'Layout Name'
       description: 'Product Layout Name'
       type: string
       enum:
@@ -280,6 +480,57 @@ components:
         - 'Framed Horizontal'
         - 'Framed Panoramic'
         - 'Framed Vertical Wide'
+    LayoutType:
+      title: 'Layout Type'
+      description: 'Product Layout Type'
+      type: string
+      enum:
+        - 'Canvas'
+        - 'Multiple'
+        - 'Framed Print'
+        - 'Framed Canvas'
+    LayoutShape:
+      title: 'Layout Shape'
+      description: 'Product Layout Shape'
+      type: string
+      enum:
+        - 'horizontal'
+        - 'vertical'
+        - 'square'
+        - 'panoramic'
+        - 'hexagon'
+    LayoutPieces:
+      title: 'Layout Pieces'
+      description: 'Number of Pieces in Layout'
+      type: integer
+      minimum: 1
+      maximum: 7
+
+    ProductScore:
+      type: object
+      title: 'Product Score (internal only)'
+      description: 'Product ranking score based on sales and other data. This is used for internal scoring, but will not be returned to the client.'
+      properties:
+        7_days:
+          title: '7 Days Score'
+          description: 'Product Score for the past 7 Days'
+          type: integer
+          minimum: 0
+        30_days:
+          title: '30 Days Score'
+          description: 'Product Score for the past 30 Days'
+          type: integer
+          minimum: 0
+        90_days:
+          title: '90 Days Score'
+          description: 'Product Score for the past 90 Days'
+          type: integer
+          minimum: 0
+        all_time:
+          title: 'All Time Score'
+          description: 'Product Score for all time'
+          type: integer
+          minimum: 0
 
     Product:
       type: object
@@ -342,44 +593,25 @@ components:
             minLength: 1
 
         color_main:
-          title: 'Main Color'
-          description: 'Product Main Color'
-          type: string
-          minLength: 3
+          $ref: '#/components/schemas/Color'
         colors:
           title: 'Colors'
           description: 'Product Colors'
           type: array
           minItems: 1
           items:
-            type: string
-            minLength: 3
+            $ref: '#/components/schemas/Color'
 
         wish_count:
           title: 'Wish Count'
           description: 'Product Wish Count'
           type: integer
           minimum: 0
-        sales_7_days:
-          title: '7 Days Sales'
-          description: 'Product 7 Days Sales'
-          type: integer
-          minimum: 0
-        sales_30_days:
-          title: '30 Days Sales'
-          description: 'Product 30 Days Sales'
-          type: integer
-          minimum: 0
-        sales_90_days:
-          title: '90 Days Sales'
-          description: 'Product 90 Days Sales'
-          type: integer
-          minimum: 0
-        sales_all_time:
-          title: 'All Time Sales'
-          description: 'Product All Time Sales'
-          type: integer
-          minimum: 0
+
+        score_us:
+          $ref: '#/components/schemas/ProductScore'
+        score_ca:
+          $ref: '#/components/schemas/ProductScore'
 
         reviews_count:
           title: 'Reviews Count'
@@ -467,30 +699,11 @@ components:
               name:
                 $ref: '#/components/schemas/LayoutName'
               type:
-                title: 'Type'
-                description: 'Layout Type'
-                type: string
-                enum:
-                  - 'Canvas'
-                  - 'Multiple'
-                  - 'Framed Print'
-                  - 'Framed Canvas'
+                $ref: '#/components/schemas/LayoutType'
               pieces:
-                title: 'Pieces'
-                description: 'Number of Pieces in Layout'
-                type: integer
-                minimum: 1
-                maximum: 6
+                $ref: '#/components/schemas/LayoutPieces'
               shape:
-                title: 'Shape'
-                description: 'Layout Shape'
-                type: string
-                enum:
-                  - 'horizontal'
-                  - 'vertical'
-                  - 'square'
-                  - 'panoramic'
-                  - 'hexagon'
+                $ref: '#/components/schemas/LayoutShape'
               url:
                 title: 'URL'
                 description: 'Layout Shop URL'
@@ -645,6 +858,20 @@ components:
           type: integer
           format: int64
 
+    ArtistStyle:
+      title: 'Artist Style'
+      description: 'Artist Style Types'
+      type: string
+      enum:
+        - 'Alternative'
+        - 'Beach House'
+        - 'Fine Art'
+        - 'Minimalist'
+        - 'Photography'
+        - 'Rustic'
+        - 'Vintage'
+        - 'Zen'
+
     Artist:
       title: 'Artist'
       description: 'Artist Details'
@@ -664,16 +891,10 @@ components:
         styles:
           title: 'Styles'
           description: 'Artist Styles'
-          type: string
-          enum:
-            - 'Alternative'
-            - 'Beach House'
-            - 'Fine Art'
-            - 'Minimalist'
-            - 'Photography'
-            - 'Rustic'
-            - 'Vintage'
-            - 'Zen'
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/ArtistStyle'
         preview_url:
           title: 'Preview URL'
           description: 'Artist Preview Image URL'
