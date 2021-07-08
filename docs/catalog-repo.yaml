@@ -642,11 +642,6 @@ components:
           type: integer
           minimum: 0
 
-        score_us:
-          $ref: '#/components/schemas/ProductScore'
-        score_ca:
-          $ref: '#/components/schemas/ProductScore'
-
         reviews_count:
           title: 'Reviews Count'
           description: 'Product Reviews Count'
@@ -891,6 +886,18 @@ components:
           description: 'Product Shopify Id'
           type: integer
           format: int64
+
+    ProductInternal:
+      title: 'Product Internal'
+      description: 'Product Internal Details'
+      allOf:
+        - $ref: '#/components/schemas/Product'
+        - type: object
+          properties:
+            score_us:
+              $ref: '#/components/schemas/ProductScore'
+            score_ca:
+              $ref: '#/components/schemas/ProductScore'
 
     ArtistStyle:
       title: 'Artist Style'
