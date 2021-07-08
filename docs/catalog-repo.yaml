@@ -572,10 +572,9 @@ components:
       description: 'Product Details'
       required:
         - sku
-        - product_type
+        - title
+        - main_image
         - url
-        - color_main
-        - colors
         - layouts
       properties:
         sku:
@@ -586,14 +585,6 @@ components:
         title:
           title: 'Title'
           description: 'Product Title'
-          type: string
-        description:
-          title: 'Description'
-          description: 'Product Description'
-          type: string
-        product_type:
-          title: 'Type'
-          description: 'Product Type'
           type: string
         main_image:
           title: 'Main Image'
@@ -607,6 +598,12 @@ components:
           title: 'URL'
           description: 'Product URL'
           type: string
+
+        artist_name:
+          title: 'Artist Name'
+          description: 'Product Artist Name'
+          type: string
+          minLength: 2
 
         collections_lv1:
           title: 'Collections Level 1 (old)'
@@ -625,16 +622,6 @@ components:
           items:
             type: string
             minLength: 1
-
-        color_main:
-          $ref: '#/components/schemas/Color'
-        colors:
-          title: 'Colors'
-          description: 'Product Colors'
-          type: array
-          minItems: 1
-          items:
-            $ref: '#/components/schemas/Color'
 
         wish_count:
           title: 'Wish Count'
@@ -662,10 +649,6 @@ components:
             type: string
             minLength: 1
 
-        clearance:
-          title: 'Clearance'
-          description: 'Is product on clearance sale'
-          type: boolean
         clearance_details:
           title: 'Clearance Details'
           description: 'Product Clearance Details'
@@ -844,43 +827,6 @@ components:
                           - 'pop of color'
                           - 'sporty'
 
-        rooms:
-          title: 'Rooms'
-          description: 'Product Rooms'
-          type: array
-          minItems: 1
-          items:
-            $ref: '#/components/schemas/RoomType'
-
-        styles_lv1:
-          title: 'Styles Level 1'
-          description: 'Product Styles Level 1'
-          type: array
-          items:
-            type: string
-        styles_lv2:
-          title: 'Styles Level 2'
-          description: 'Product Styles Level 2'
-          type: array
-          items:
-            type: string
-
-        created_at:
-          title: 'Created At'
-          description: 'Product Creation Timestamp'
-          type: integer
-          format: int64
-        last_updated_at:
-          title: 'Updated At'
-          description: 'Product Last Update Timestamp'
-          type: integer
-          format: int64
-        published_at:
-          title: 'Published At'
-          description: 'Product Publishing Timestamp'
-          type: integer
-          format: int64
-
         shopify_id:
           title: 'Shopify Id'
           description: 'Product Shopify Id'
@@ -894,10 +840,71 @@ components:
         - $ref: '#/components/schemas/Product'
         - type: object
           properties:
+            description:
+              title: 'Description'
+              description: 'Product Description'
+              type: string
+            product_type:
+              title: 'Type'
+              description: 'Product Type'
+              type: string
+
             score_us:
               $ref: '#/components/schemas/ProductScore'
             score_ca:
               $ref: '#/components/schemas/ProductScore'
+
+            clearance:
+              title: 'Clearance'
+              description: 'Is product on clearance sale'
+              type: boolean
+
+            color_main:
+              $ref: '#/components/schemas/Color'
+            colors:
+              title: 'Colors'
+              description: 'Product Colors'
+              type: array
+              minItems: 1
+              items:
+                $ref: '#/components/schemas/Color'
+
+            rooms:
+              title: 'Rooms'
+              description: 'Product Rooms'
+              type: array
+              minItems: 1
+              items:
+                $ref: '#/components/schemas/RoomType'
+
+            styles_lv1:
+              title: 'Styles Level 1'
+              description: 'Product Styles Level 1'
+              type: array
+              items:
+                type: string
+            styles_lv2:
+              title: 'Styles Level 2'
+              description: 'Product Styles Level 2'
+              type: array
+              items:
+                type: string
+
+            created_at:
+              title: 'Created At'
+              description: 'Product Creation Timestamp'
+              type: integer
+              format: int64
+            last_updated_at:
+              title: 'Updated At'
+              description: 'Product Last Update Timestamp'
+              type: integer
+              format: int64
+            published_at:
+              title: 'Published At'
+              description: 'Product Publishing Timestamp'
+              type: integer
+              format: int64
 
     ArtistStyle:
       title: 'Artist Style'
