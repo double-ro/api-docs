@@ -998,8 +998,3 @@ components:
               description: 'Artist Sales in CA'
               type: integer
               minimum: 0
-            sales_extras:
-              title: 'Sales Extras'
-              description: 'Artist Extras Sales'
-              type: integer
-              minimum: 0
