@@ -1171,6 +1171,7 @@ components:
       type: string
       enum:
         - 'artist_name'
+        - 'artist_style'
         - 'collections_lv1'
         - 'collections_lv2'
         - 'styles_lv1'
@@ -1196,6 +1197,8 @@ components:
       type: object
       properties:
         artist_name:
+          $ref: '#/components/schemas/FacetStats'
+        artist_style:
           $ref: '#/components/schemas/FacetStats'
         collections_lv1:
           $ref: '#/components/schemas/FacetStats'
