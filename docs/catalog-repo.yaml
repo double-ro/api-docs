@@ -13,6 +13,8 @@ tags:
     description: Artists management resources
   - name: products
     description: Products management resources
+  - name: product-stats
+    description: Products stats resources
 paths:
   /artists:
     options:
@@ -393,6 +395,170 @@ paths:
           integration.request.querystring.sort: method.request.querystring.sort
           integration.request.querystring.page_size: method.request.querystring.page_size
           integration.request.querystring.page_token: method.request.querystring.page_token
+          integration.request.header.Authorization: method.request.header.Authorization
+          integration.request.header.origin: method.request.header.origin
+        responseParameters:
+          method.response.header.Access-Control-Allow-Origin: integration.response.header.Access-Control-Allow-Origin
+        security:
+          - basicAuth: [ ]
+  /products/{sku}:
+    options:
+      summary: CORS support
+      tags:
+        - products
+      responses:
+        200:
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content: { }
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {"statusCode" : 200}
+        responses:
+          default:
+            statusCode: 200
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,GET'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            responseTemplates:
+              application/json: '{}'
+      x-amazon-apigateway-auth: NONE
+    get:
+      summary: Get product details
+      description: Returns product details by specific SKU
+      operationId: product-details-get
+      tags:
+        - products
+      parameters:
+        - name: sku
+          in: path
+          schema:
+            title: 'SKU'
+            description: 'Product SKU'
+            type: string
+            minLength: 1
+      responses:
+        200:
+          description: 'Successfully returned product details'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        401:
+          description: 'Unauthorized Exception'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FunctionArn}/invocations
+        httpMethod: POST
+        type: aws_proxy
+        passthroughBehavior: never
+        requestParameters:
+          integration.request.path.sku: method.request.path.sku
+          integration.request.header.Authorization: method.request.header.Authorization
+          integration.request.header.origin: method.request.header.origin
+        responseParameters:
+          method.response.header.Access-Control-Allow-Origin: integration.response.header.Access-Control-Allow-Origin
+        security:
+          - basicAuth: [ ]
+  /products/stats:
+    options:
+      summary: CORS support
+      tags:
+        - product-stats
+      responses:
+        200:
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+          content: { }
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {"statusCode" : 200}
+        responses:
+          default:
+            statusCode: 200
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,GET'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            responseTemplates:
+              application/json: '{}'
+      x-amazon-apigateway-auth: NONE
+    get:
+      summary: Get product stats
+      description: Returns product stats with possibility to filter by specific facets
+      operationId: product-stats-get
+      tags:
+        - product-stats
+      parameters:
+        - name: types
+          in: query
+          explode: false
+          schema:
+            title: 'Facet Types'
+            type: array
+            minItems: 1
+            items:
+              $ref: '#/components/schemas/FacetType'
+      responses:
+        200:
+          description: 'Successfully returned product stats'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductStats'
+        401:
+          description: 'Unauthorized Exception'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FunctionArn}/invocations
+        httpMethod: POST
+        type: aws_proxy
+        passthroughBehavior: never
+        requestParameters:
+          integration.request.querystring.types: method.request.querystring.types
           integration.request.header.Authorization: method.request.header.Authorization
           integration.request.header.origin: method.request.header.origin
         responseParameters:
@@ -998,3 +1164,58 @@ components:
               description: 'Artist Sales in CA'
               type: integer
               minimum: 0
+
+    FacetType:
+      title: 'Facet Type'
+      description: 'Facet Type enum'
+      type: string
+      enum:
+        - 'artist_name'
+        - 'collections_lv1'
+        - 'collections_lv2'
+        - 'styles_lv1'
+        - 'styles_lv2'
+        - 'color'
+        - 'layout_name'
+        - 'layout_pieces'
+        - 'layout_shape'
+        - 'layout_type'
+        - 'preview_room_type'
+        - 'tags_auto'
+    FacetStats:
+      title: 'Facet Stats'
+      description: 'Facet Stats Details'
+      type: object
+      additionalProperties:
+        title: 'Facet Stats Value'
+        description: 'Facet Stats Aggregated Value'
+        type: number
+        minimum: 0
+    ProductStats:
+      title: 'Product Stats Details'
+      type: object
+      properties:
+        artist_name:
+          $ref: '#/components/schemas/FacetStats'
+        collections_lv1:
+          $ref: '#/components/schemas/FacetStats'
+        collections_lv2:
+          $ref: '#/components/schemas/FacetStats'
+        styles_lv1:
+          $ref: '#/components/schemas/FacetStats'
+        styles_lv2:
+          $ref: '#/components/schemas/FacetStats'
+        color:
+          $ref: '#/components/schemas/FacetStats'
+        layout_name:
+          $ref: '#/components/schemas/FacetStats'
+        layout_pieces:
+          $ref: '#/components/schemas/FacetStats'
+        layout_shape:
+          $ref: '#/components/schemas/FacetStats'
+        layout_type:
+          $ref: '#/components/schemas/FacetStats'
+        preview_room_type:
+          $ref: '#/components/schemas/FacetStats'
+        tags_auto:
+          $ref: '#/components/schemas/FacetStats'
