@@ -930,25 +930,25 @@ components:
                       title: 'Name'
                       description: 'Layout Size Name'
                       type: string
-              previews:
-                title: 'Previews'
-                description: 'Layout Previews'
+              room_previews:
+                title: 'Room Previews'
+                description: 'Layout Room Previews'
                 type: array
                 items:
-                  title: 'Preview'
-                  description: 'Layout Preview'
+                  title: 'Room Preview'
+                  description: 'Layout Room Preview'
                   type: object
                   required:
-                    - preview_url
+                    - url
                     - room_type
                     - styles
                     - colors
                   properties:
-                    preview_url:
+                    url:
                       title: 'Preview URL'
                       description: 'Layout Preview URL'
                       type: string
-                    empty_room_url:
+                    room_url:
                       title: 'Room Preview URL'
                       description: 'Empty Room Preview URL'
                       type: string
