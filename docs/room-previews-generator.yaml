@@ -6,15 +6,14 @@ info:
     Project responsible for room previews generation.
 
     **Example URLs**:
-    - https://images.dev.elephantstock.net/previews?sku=KAB-ES-CJU&layout=5-star&index=0&size=92x42&quality=47
-    - https://images.dev.elephantstock.net/previews?sku=KAB-ES-CJU&layout=5-star&type=info&index=1
-    - https://images.dev.elephantstock.net/previews?sku=KAB-ES-CJU&layout=5-star&type=sc&index=0
+    - https://images.elephantstock.net/previews?sku=KAB-ES-CJU&layout=5-star&index=0&size=92x42&quality=47
+    - https://images.elephantstock.net/previews?sku=KAB-ES-CJU&layout=5-star&type=info&index=1
+    - https://images.elephantstock.net/previews?sku=KAB-ES-CJU&layout=5-star&type=sc&index=0
 
   version: 1.0.0
 
 servers:
-  - url: https://images.dev.elephantstock.net
-    description: Dev environment server for room previews
+  - url: https://images.elephantstock.net
 
 paths:
   /previews:
@@ -124,12 +123,7 @@ paths:
             default: jpeg
       responses:
         '200':
-          description: URL generated successfully
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: https://images.dev.elephantstock.net/previews?sku=KAB-ES-CJU&layout=5-star
+           $ref: '#/components/responses/SuccessResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
