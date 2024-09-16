@@ -6,20 +6,26 @@ info:
     Project responsible for room previews generation.
 
     **Example URLs**:
-    - https://images.elephantstock.net/previews?sku=KAB-ES-CJU&layout=5-star&index=0&size=92x42&quality=47
-    - https://images.elephantstock.net/previews?sku=KAB-ES-CJU&layout=5-star&type=info&index=1
-    - https://images.elephantstock.net/previews?sku=KAB-ES-CJU&layout=5-star&type=sc&index=0
+    - [https://images.dev.elephantstock.net/previews?sku=KAB-ES-CJU&layout=5-star&index=0&size=92x42&quality=47](https://images.dev.elephantstock.net/previews?sku=KAB-ES-CJU&layout=5-star&index=0&size=92x42&quality=47)
+    - [https://images.dev.elephantstock.net/previews?sku=KAB-ES-CJU&layout=5-star&type=info&index=1](https://images.dev.elephantstock.net/previews?sku=KAB-ES-CJU&layout=5-star&type=info&index=1)
+    - [https://images.dev.elephantstock.net/previews?sku=KAB-ES-CJU&layout=5-star&type=sc&index=0](https://images.dev.elephantstock.net/previews?sku=KAB-ES-CJU&layout=5-star&type=sc&index=0)
+
 
   version: 1.0.0
 
 servers:
   - url: https://images.elephantstock.net
+  
+tags:
+  - name: "API"
 
 paths:
   /previews:
     get:
       summary: Retrieve or generate room previews
       operationId: getRoomPreview
+      tags:
+        - API
       description: |
         Retrieve the room preview image for the given SKU, layout, room, size, frame style, and frame color.
         Generates and caches the image if it doesn't already exist.
