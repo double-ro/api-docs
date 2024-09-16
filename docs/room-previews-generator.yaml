@@ -1,11 +1,20 @@
 openapi: 3.0.3
 
 info:
-  title:
-    Room Previews Generator API
-  description:
+  title: Room Previews Generator API
+  description: |
     Project responsible for room previews generation.
+
+    **Example URLs**:
+    - https://images.dev.elephantstock.net/previews?sku=KAB-ES-CJU&layout=5-star&index=0&size=92x42&quality=47
+    - https://images.dev.elephantstock.net/previews?sku=KAB-ES-CJU&layout=5-star&type=info&index=1
+    - https://images.dev.elephantstock.net/previews?sku=KAB-ES-CJU&layout=5-star&type=sc&index=0
+
   version: 1.0.0
+
+servers:
+  - url: https://images.dev.elephantstock.net
+    description: Dev environment server for room previews
 
 paths:
   /previews:
@@ -13,7 +22,8 @@ paths:
       summary: Retrieve or generate room previews
       operationId: getRoomPreview
       description: |
-        Retrieve the room preview image for the given SKU, layout, room, size, frame style, and frame color. Generates and caches the image if it doesn't already exist.
+        Retrieve the room preview image for the given SKU, layout, room, size, frame style, and frame color.
+        Generates and caches the image if it doesn't already exist.
       parameters:
         - name: sku
           in: query
@@ -43,7 +53,7 @@ paths:
         - name: index
           in: query
           required: false
-          description: Index per image type(room OR corner OR info OR size chart)
+          description: Index per image type (room OR corner OR info OR size chart)
           schema:
             type: number
             minimum: 0
@@ -114,7 +124,12 @@ paths:
             default: jpeg
       responses:
         '200':
-          $ref: '#/components/responses/SuccessResponse'
+          description: URL generated successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: https://images.dev.elephantstock.net/previews?sku=KAB-ES-CJU&layout=5-star
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
