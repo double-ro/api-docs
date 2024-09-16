@@ -2,83 +2,10 @@ openapi: 3.0.3
 
 info:
   title:
-    Fn::Sub: ${ApplicationName} REST API (${Stage})
+    Room Previews Generator API
   description:
-    Fn::Sub: ${ApplicationName} project responsible for room previews generation.
+    Project responsible for room previews generation.
   version: 1.0.0
-
-x-amazon-apigateway-gateway-responses:
-  ACCESS_DENIED:
-    responseTemplates:
-      application/json: '{"error": {"code": "AccessDenied", "message": $context.error.messageString}}'
-    responseParameters:
-      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-  AUTHORIZER_FAILURE:
-    responseTemplates:
-      application/json: '{"error": {"code": "AccessDenied", "message": $context.error.messageString}}'
-    responseParameters:
-      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-  EXPIRED_TOKEN:
-    responseTemplates:
-      application/json: '{"error": {"code": "AccessDenied", "message": $context.error.messageString}}'
-    responseParameters:
-      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-  INVALID_SIGNATURE:
-    responseTemplates:
-      application/json: '{"error": {"code": "AccessDenied", "message": $context.error.messageString}}'
-    responseParameters:
-      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-  MISSING_AUTHENTICATION_TOKEN:
-    responseTemplates:
-      application/json: '{"error": {"code": "AccessDenied", "message": $context.error.messageString}}'
-    responseParameters:
-      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-  UNAUTHORIZED:
-    responseTemplates:
-      application/json: '{"error": {"code": "AccessDenied", "message": $context.error.messageString}}'
-    responseParameters:
-      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-  RESOURCE_NOT_FOUND:
-    responseTemplates:
-      application/json: '{"error": {"code": "NotFound", "message": $context.error.messageString}}'
-    responseParameters:
-      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-  BAD_REQUEST_BODY:
-    responseTemplates:
-      application/json: '{"error": {"code": "BadRequest", "message": "$context.error.validationErrorString", "details": $context.error.messageString}}'
-    responseParameters:
-      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-  BAD_REQUEST_PARAMETERS:
-    responseTemplates:
-      application/json: '{"error": {"code": "BadRequest", "message": "$context.error.validationErrorString", "details": $context.error.messageString}}'
-    responseParameters:
-      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-  UNSUPPORTED_MEDIA_TYPE:
-    responseTemplates:
-      application/json: '{"error": {"code": "BadRequest", "message": $context.error.messageString}}'
-    responseParameters:
-      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-  DEFAULT_4XX:
-    responseTemplates:
-      application/json: '{"error": {"code": "ApiGeneral", "message": $context.error.messageString}}'
-    responseParameters:
-      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-  DEFAULT_5XX:
-    responseTemplates:
-      application/json: '{"error": {"code": "ServerError", "message": $context.error.messageString}}'
-    responseParameters:
-      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-  THROTTLED:
-    responseTemplates:
-      application/json: '{"error": {"code": "TooManyRequests", "message": $context.error.messageString}}'
-    responseParameters:
-      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-
-servers:
-  - url:
-      Fn::Sub: 'https://${ApiSubdomain}${DomainName}'
-    description:
-      Fn::Sub: 'Room Previews Generator (${Stage})'
 
 paths:
   /previews:
@@ -171,10 +98,10 @@ paths:
         - name: m_glass
           in: query
           required: false
-          default: false
           description: Should render magnifying glass effect or not
           schema:
             type: boolean
+            default: false
         - name: format
           in: query
           required: false
@@ -190,53 +117,6 @@ paths:
           $ref: '#/components/responses/SuccessResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-      x-amazon-apigateway-integration:
-        uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ImageServiceFunction.Arn}/invocations
-        httpMethod: POST
-        type: aws_proxy
-      x-amazon-apigateway-request-validator: params-only
-
-    delete:
-      summary: Clear the cache
-      operationId: clearCache
-      description: Clear the cache for the room previews
-      parameters:
-        - name: sku
-          in: query
-          required: false
-          description: SKU of the product to clear from cache
-          schema:
-            type: string
-        - name: layout
-          in: query
-          required: false
-          description: Layout of the room preview to clear from cache
-          schema:
-            type: string
-        - name: room
-          in: query
-          required: false
-          description: Room index to clear from cache
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successfully cleared the cache
-        '400':
-          description: Bad request
-        '404':
-          description: Resource not found
-      x-amazon-apigateway-integration:
-        uri:
-          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ImageServiceFunction.Arn}/invocations
-        httpMethod: POST
-        type: aws_proxy
-
-x-amazon-apigateway-request-validators:
-  params-only:
-    validateRequestBody: false
-    validateRequestParameters: true
 
 components:
   responses:
@@ -249,15 +129,3 @@ components:
             format: binary
     NotFoundResponse:
       description: Resource not found
-  securitySchemes:
-    ClientAuthorizer:
-      type: apiKey
-      name: x-api-key
-      in: query
-      x-amazon-apigateway-authtype: custom
-      x-amazon-apigateway-authorizer:
-        type: request
-        identitySource: method.request.querystring.x-api-key
-        authorizerUri:
-          Fn::Sub: 'arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:${ClientAuthorizerFunction}/invocations'
-        authorizerResultTtlInSeconds: 60
