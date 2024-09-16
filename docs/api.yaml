@@ -1,0 +1,263 @@
+openapi: 3.0.3
+
+info:
+  title:
+    Fn::Sub: ${ApplicationName} REST API (${Stage})
+  description:
+    Fn::Sub: ${ApplicationName} project responsible for room previews generation.
+  version: 1.0.0
+
+x-amazon-apigateway-gateway-responses:
+  ACCESS_DENIED:
+    responseTemplates:
+      application/json: '{"error": {"code": "AccessDenied", "message": $context.error.messageString}}'
+    responseParameters:
+      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+  AUTHORIZER_FAILURE:
+    responseTemplates:
+      application/json: '{"error": {"code": "AccessDenied", "message": $context.error.messageString}}'
+    responseParameters:
+      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+  EXPIRED_TOKEN:
+    responseTemplates:
+      application/json: '{"error": {"code": "AccessDenied", "message": $context.error.messageString}}'
+    responseParameters:
+      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+  INVALID_SIGNATURE:
+    responseTemplates:
+      application/json: '{"error": {"code": "AccessDenied", "message": $context.error.messageString}}'
+    responseParameters:
+      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+  MISSING_AUTHENTICATION_TOKEN:
+    responseTemplates:
+      application/json: '{"error": {"code": "AccessDenied", "message": $context.error.messageString}}'
+    responseParameters:
+      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+  UNAUTHORIZED:
+    responseTemplates:
+      application/json: '{"error": {"code": "AccessDenied", "message": $context.error.messageString}}'
+    responseParameters:
+      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+  RESOURCE_NOT_FOUND:
+    responseTemplates:
+      application/json: '{"error": {"code": "NotFound", "message": $context.error.messageString}}'
+    responseParameters:
+      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+  BAD_REQUEST_BODY:
+    responseTemplates:
+      application/json: '{"error": {"code": "BadRequest", "message": "$context.error.validationErrorString", "details": $context.error.messageString}}'
+    responseParameters:
+      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+  BAD_REQUEST_PARAMETERS:
+    responseTemplates:
+      application/json: '{"error": {"code": "BadRequest", "message": "$context.error.validationErrorString", "details": $context.error.messageString}}'
+    responseParameters:
+      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+  UNSUPPORTED_MEDIA_TYPE:
+    responseTemplates:
+      application/json: '{"error": {"code": "BadRequest", "message": $context.error.messageString}}'
+    responseParameters:
+      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+  DEFAULT_4XX:
+    responseTemplates:
+      application/json: '{"error": {"code": "ApiGeneral", "message": $context.error.messageString}}'
+    responseParameters:
+      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+  DEFAULT_5XX:
+    responseTemplates:
+      application/json: '{"error": {"code": "ServerError", "message": $context.error.messageString}}'
+    responseParameters:
+      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+  THROTTLED:
+    responseTemplates:
+      application/json: '{"error": {"code": "TooManyRequests", "message": $context.error.messageString}}'
+    responseParameters:
+      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+
+servers:
+  - url:
+      Fn::Sub: 'https://${ApiSubdomain}${DomainName}'
+    description:
+      Fn::Sub: 'Room Previews Generator (${Stage})'
+
+paths:
+  /previews:
+    get:
+      summary: Retrieve or generate room previews
+      operationId: getRoomPreview
+      description: |
+        Retrieve the room preview image for the given SKU, layout, room, size, frame style, and frame color. Generates and caches the image if it doesn't already exist.
+      parameters:
+        - name: sku
+          in: query
+          required: true
+          description: SKU
+          schema:
+            type: string
+            minLength: 3
+        - name: layout
+          in: query
+          required: true
+          description: Product layout
+          schema:
+            type: string
+            minLength: 3
+        - name: type
+          in: query
+          description: Image type
+          schema:
+            type: string
+            enum:
+              - room
+              - corner
+              - info
+              - sc
+            default: room
+        - name: index
+          in: query
+          required: false
+          description: Index per image type(room OR corner OR info OR size chart)
+          schema:
+            type: number
+            minimum: 0
+            maximum: 100
+        - name: size
+          in: query
+          required: false
+          description: Overall size (e.g., 52x26)
+          schema:
+            type: string
+            minLength: 3
+            pattern: "^[0-9]+x[0-9]+$"
+        - name: width
+          in: query
+          required: false
+          description: Output image width
+          schema:
+            type: number
+            minimum: 100
+            maximum: 2400
+        - name: height
+          in: query
+          required: false
+          description: Output image height
+          schema:
+            type: number
+            minimum: 100
+            maximum: 2400
+        - name: frame_style
+          in: query
+          required: false
+          description: Frame style
+          schema:
+            type: string
+            minLength: 3
+        - name: frame_color
+          in: query
+          required: false
+          description: Frame color
+          schema:
+            type: string
+            minLength: 3
+        - name: quality
+          in: query
+          required: false
+          description: Image Quality (1-100, default 70)
+          schema:
+            type: number
+            minimum: 1
+            maximum: 100
+            default: 70
+        - name: m_glass
+          in: query
+          required: false
+          default: false
+          description: Should render magnifying glass effect or not
+          schema:
+            type: boolean
+        - name: format
+          in: query
+          required: false
+          description: Output image format (webp, jpeg)
+          schema:
+            type: string
+            enum:
+              - jpeg
+              - webp
+            default: jpeg
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ImageServiceFunction.Arn}/invocations
+        httpMethod: POST
+        type: aws_proxy
+      x-amazon-apigateway-request-validator: params-only
+
+    delete:
+      summary: Clear the cache
+      operationId: clearCache
+      description: Clear the cache for the room previews
+      parameters:
+        - name: sku
+          in: query
+          required: false
+          description: SKU of the product to clear from cache
+          schema:
+            type: string
+        - name: layout
+          in: query
+          required: false
+          description: Layout of the room preview to clear from cache
+          schema:
+            type: string
+        - name: room
+          in: query
+          required: false
+          description: Room index to clear from cache
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully cleared the cache
+        '400':
+          description: Bad request
+        '404':
+          description: Resource not found
+      x-amazon-apigateway-integration:
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ImageServiceFunction.Arn}/invocations
+        httpMethod: POST
+        type: aws_proxy
+
+x-amazon-apigateway-request-validators:
+  params-only:
+    validateRequestBody: false
+    validateRequestParameters: true
+
+components:
+  responses:
+    SuccessResponse:
+      description: Successfully retrieved or generated the image
+      content:
+        image/jpeg:
+          schema:
+            type: string
+            format: binary
+    NotFoundResponse:
+      description: Resource not found
+  securitySchemes:
+    ClientAuthorizer:
+      type: apiKey
+      name: x-api-key
+      in: query
+      x-amazon-apigateway-authtype: custom
+      x-amazon-apigateway-authorizer:
+        type: request
+        identitySource: method.request.querystring.x-api-key
+        authorizerUri:
+          Fn::Sub: 'arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:${ClientAuthorizerFunction}/invocations'
+        authorizerResultTtlInSeconds: 60
