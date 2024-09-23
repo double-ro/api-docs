@@ -24,21 +24,21 @@ info:
     - 5 total indexes representing 5 different rooms: `[0 - 4]`.
     
     ### Canvas:
-    #### Examples:  
+    ##### Examples:  
     [https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&size=54x27](https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&size=54x27)  
     [https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&size=54x27&index=2](https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&size=54x27&index=2)
 
     ### Framed Canvas:
     - When not specifying colors or styles, it defaults to `black` and `floating`.
     
-    #### Examples:  
+    ##### Examples:  
     [https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=floating-2-core-horizontal&size=40x25&index=4](https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=floating-2-core-horizontal&size=40x25&index=4)  
     [https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=floating-2-core-horizontal&size=40x25&index=3&frame_color=white&frame_style=modern-deep](https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=floating-2-core-horizontal&size=40x25&index=3&frame_color=white&frame_style=modern-deep)
 
     ### Framed Print:
     - When not specifying colors or styles, it defaults to `black` and `modern`.
     
-    #### Examples:  
+    ##### Examples:  
     [https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=framed-2-core-horizontal&size=44x26&index=1](https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=framed-2-core-horizontal&size=44x26&index=1&frame_style=classic&frame_color=gold)  
     [https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=framed-2-core-horizontal&size=44x26&index=1&frame_style=classic&frame_color=gold](https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=framed-2-core-horizontal&size=44x26&index=1&frame_style=classic&frame_color=gold)
     
@@ -47,7 +47,7 @@ info:
     ## Corner Type:
     - Index is not used here.
     
-    #### Example:  
+    ##### Example:  
     [https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&size=54x27&type=corner](https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&size=54x27&type=corner)
     
     _________________
@@ -56,7 +56,7 @@ info:
     - Default index is `0`.  
     - 4 Total indexes: `[0 - 3]` (representing two available sizes per index).
     
-    #### Examples:  
+    ##### Examples:  
     [https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&type=sc](https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&type=sc)  
     [https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&type=sc&index=2](https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&type=sc&index=2)
     
@@ -67,7 +67,7 @@ info:
     - The magnifying glass effect only applies to the non-rotated artwork info (index `0`).
     - Index `1` represents the rotated artwork info, for which `size` is irrelevant.
     
-    #### Examples:  
+    ##### Examples:  
     [https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&size=49x24&type=info](https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&size=49x24&type=info)  
     [https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&size=49x24&type=info&m_glass=true](https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&size=49x24&type=info&m_glass=true)  
     [https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&type=info&index=1](https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&type=info&index=1)  
