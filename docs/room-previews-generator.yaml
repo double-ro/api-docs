@@ -65,11 +65,11 @@ info:
     ## Info Type:
     - Default index is `0`, representing the non-rotated artwork info.
     - The magnifying glass effect only applies to the non-rotated artwork info (index `0`).
-    - Index `1` represents the rotated artwork info, for which `size` is irrelevant.
+    - Index `1` represents the rotated artwork info.
     
     ##### Examples:  
-    [https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&size=49x24&type=info](https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&size=49x24&type=info)  
-    [https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&size=49x24&type=info&m_glass=true](https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&size=49x24&type=info&m_glass=true)  
+    [https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&type=info](https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&type=info)  
+    [https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&type=info&m_glass=true](https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&type=info&m_glass=true)  
     [https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&type=info&index=1](https://images.elephantstock.net/previews?sku=ND1-ES-1U1&layout=5-mess&type=info&index=1)  
 
   version: 1.0.0
