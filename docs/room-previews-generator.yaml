@@ -5,7 +5,10 @@ info:
   description: |
     ### Required URL Parameters:
     - **sku**: The SKU of the product
-    - **layout**: The layout of the product
+    - **layout**: The layout of the product. Accepted formats: `{{shape}}`, `layout-{{shape}}`
+
+    ### Conditionally Required URL Parameters:
+     - **size**: The artwork overall size (required for `corner` and `room` types). Accepted formats: `{{width}}x{{height}}`, `{{width}}-{{height}}`
 
     ### Optional URL Parameters:
     - **height**: Resulting image height (default is `1200`)
