@@ -13,12 +13,13 @@ info:
     ### Optional URL Parameters:
     - **height**: Resulting image height (default is `1200`)
     - **width**: Resulting image width (default is `1200`)
-    - **format**: Image format (default is `jpeg`)
+    - **format**: Image format, one of `[jpeg, webp, png]` (default is `jpeg`)
     - **quality**: Compression quality from 1-100 (default is `70`)
     - **type**: Image type, one of `[room, corner, info, sc]` (default is `room`)
     - **index**: Index per type, such as `room index`, `info index`, or `size chart index`
     - **frame_color**: Frame color (default is `black`)
     - **frame_style**: For framed canvas layouts, default is `floating`. For framed prints, default is `modern`.
+    - **m_glass**: Whether to show a magnifying glass effect over the artwork. Applied only for the `info` type, and only if `true` (default is `false`):
 
     _________________
     
